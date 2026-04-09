@@ -85,17 +85,16 @@ vim.g.maplocalleader = " "
 vim.keymap.set("n", "<leader>q", "<cmd>q<CR>", { noremap = true, silent = true })
 vim.keymap.set("n", "<leader>w", "<cmd>w<CR>", { noremap = true, silent = true })
 
-vim.keymap.set("n", "<leader>tt", "<cmd>ToggleTerm direction=float<CR>", { silent = true })
 vim.keymap.set("t", "<Esc>", [[<C-\><C-n>]])
 
-vim.keymap.set("n", "<leader>gg", _lazygit_toggle, { noremap = true, silent = true })
 
 -- CUSTOM PLUGINS
 vim.pack.add({
     "https://github.com/akinsho/toggleterm.nvim",
 	"https://www.github.com/lewis6991/gitsigns.nvim",
     "https://github.com/nvim-tree/nvim-web-devicons",
-    "https://github.com/nvim-tree/nvim-tree.lua"
+    "https://github.com/nvim-tree/nvim-tree.lua",
+	"https://www.github.com/ibhagwan/fzf-lua",
 })
 
 local function packadd(name)
@@ -105,6 +104,7 @@ packadd("toggleterm.nvim")
 packadd("gitsigns.nvim")
 packadd("nvim-web-devicons")
 packadd("nvim-tree.lua")
+packadd("fzf-lua")
 
 -- PLUGIN CONFIG
 require("toggleterm").setup({
@@ -116,6 +116,8 @@ require("toggleterm").setup({
   end)
 end,
 })
+vim.keymap.set("n", "<leader>tt", "<cmd>ToggleTerm direction=float<CR>", { silent = true })
+
 require("gitsigns").setup({
 	signs = {
 		add = { text = "\u{2590}" }, -- ▏
@@ -128,6 +130,7 @@ require("gitsigns").setup({
 	signcolumn = true,
 	current_line_blame = false,
 })
+
 require("nvim-tree").setup({
 	view = {
 		width = 35,
@@ -142,6 +145,26 @@ require("nvim-tree").setup({
 vim.keymap.set("n", "<leader>e", function()
 	require("nvim-tree.api").tree.toggle()
 end, { desc = "Toggle NvimTree" })
+
+require("fzf-lua").setup({})
+vim.keymap.set("n", "<leader>ff", function()
+	require("fzf-lua").files()
+end, { desc = "FZF Files" })
+vim.keymap.set("n", "<leader>fg", function()
+	require("fzf-lua").live_grep()
+end, { desc = "FZF Live Grep" })
+vim.keymap.set("n", "<leader>fb", function()
+	require("fzf-lua").buffers()
+end, { desc = "FZF Buffers" })
+vim.keymap.set("n", "<leader>fh", function()
+	require("fzf-lua").help_tags()
+end, { desc = "FZF Help Tags" })
+vim.keymap.set("n", "<leader>fx", function()
+	require("fzf-lua").diagnostics_document()
+end, { desc = "FZF Diagnostics Document" })
+vim.keymap.set("n", "<leader>fX", function()
+	require("fzf-lua").diagnostics_workspace()
+end, { desc = "FZF Diagnostics Workspace" })
 
 -- GIT INTEGRATION WITH LAZYGIT
 local Terminal = require("toggleterm.terminal").Terminal
@@ -168,6 +191,7 @@ local lazygit = Terminal:new({
 function _lazygit_toggle()
   lazygit:toggle()
 end
+vim.keymap.set("n", "<leader>gg", _lazygit_toggle, { noremap = true, silent = true })
 
 -- AUTOCMDS
 -- highlight yanked text
