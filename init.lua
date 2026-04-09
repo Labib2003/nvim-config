@@ -78,10 +78,24 @@ vim.opt.diffopt:append("linematch:60") -- improve diff display
 vim.opt.redrawtime = 10000 -- increase neovim redraw tolerance
 vim.opt.maxmempattern = 20000 -- increase max memory
 
+-- KEYMAPS FOR BULIT IN FEATURES
+vim.g.mapleader = " " 
+vim.g.maplocalleader = " " 
+
+vim.keymap.set("n", "<leader>q", "<cmd>q<CR>", { noremap = true, silent = true })
+vim.keymap.set("n", "<leader>w", "<cmd>w<CR>", { noremap = true, silent = true })
+
+vim.keymap.set("n", "<leader>tt", "<cmd>ToggleTerm direction=float<CR>", { silent = true })
+vim.keymap.set("t", "<Esc>", [[<C-\><C-n>]])
+
+vim.keymap.set("n", "<leader>gg", _lazygit_toggle, { noremap = true, silent = true })
+
 -- CUSTOM PLUGINS
 vim.pack.add({
     "https://github.com/akinsho/toggleterm.nvim",
 	"https://www.github.com/lewis6991/gitsigns.nvim",
+    "https://github.com/nvim-tree/nvim-web-devicons",
+    "https://github.com/nvim-tree/nvim-tree.lua"
 })
 
 local function packadd(name)
@@ -89,6 +103,8 @@ local function packadd(name)
 end
 packadd("toggleterm.nvim")
 packadd("gitsigns.nvim")
+packadd("nvim-web-devicons")
+packadd("nvim-tree.lua")
 
 -- PLUGIN CONFIG
 require("toggleterm").setup({
@@ -112,6 +128,20 @@ require("gitsigns").setup({
 	signcolumn = true,
 	current_line_blame = false,
 })
+require("nvim-tree").setup({
+	view = {
+		width = 35,
+	},
+	filters = {
+		dotfiles = false,
+	},
+	renderer = {
+		group_empty = true,
+	},
+})
+vim.keymap.set("n", "<leader>e", function()
+	require("nvim-tree.api").tree.toggle()
+end, { desc = "Toggle NvimTree" })
 
 -- GIT INTEGRATION WITH LAZYGIT
 local Terminal = require("toggleterm.terminal").Terminal
@@ -138,18 +168,6 @@ local lazygit = Terminal:new({
 function _lazygit_toggle()
   lazygit:toggle()
 end
-
--- KEYMAPS
-vim.g.mapleader = " " 
-vim.g.maplocalleader = " " 
-
-vim.keymap.set("n", "<leader>q", "<cmd>q<CR>", { noremap = true, silent = true })
-vim.keymap.set("n", "<leader>w", "<cmd>w<CR>", { noremap = true, silent = true })
-
-vim.keymap.set("n", "<leader>tt", "<cmd>ToggleTerm direction=float<CR>", { silent = true })
-vim.keymap.set("t", "<Esc>", [[<C-\><C-n>]])
-
-vim.keymap.set("n", "<leader>gg", _lazygit_toggle, { noremap = true, silent = true })
 
 -- AUTOCMDS
 -- highlight yanked text
