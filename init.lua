@@ -110,13 +110,22 @@ packadd("fzf-lua")
 require("toggleterm").setup({
   direction = "float",
   start_in_insert = true,
+
   on_open = function(term)
-  vim.schedule(function()
-    vim.cmd("startinsert!")
-  end)
-end,
+    vim.schedule(function()
+      vim.cmd("startinsert!")
+    end)
+  end, -- 🔑 this was missing
+
+  size = function(term)
+    if term.direction == "horizontal" then
+      return 15
+    elseif term.direction == "vertical" then
+      return 35 
+    end
+  end,
 })
-vim.keymap.set("n", "<leader>tt", "<cmd>ToggleTerm direction=float<CR>", { silent = true })
+vim.keymap.set("n", "<leader>tt", "<cmd>ToggleTerm direction=vertical<CR>", { silent = true })
 
 require("gitsigns").setup({
 	signs = {
