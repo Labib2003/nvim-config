@@ -80,13 +80,15 @@ vim.opt.maxmempattern = 20000 -- increase max memory
 
 -- CUSTOM PLUGINS
 vim.pack.add({
-    "https://github.com/akinsho/toggleterm.nvim"
+    "https://github.com/akinsho/toggleterm.nvim",
+	"https://www.github.com/lewis6991/gitsigns.nvim",
 })
 
 local function packadd(name)
 	vim.cmd("packadd " .. name)
 end
 packadd("toggleterm.nvim")
+packadd("gitsigns.nvim")
 
 -- PLUGIN CONFIG
 require("toggleterm").setup({
@@ -97,6 +99,18 @@ require("toggleterm").setup({
     vim.cmd("startinsert!")
   end)
 end,
+})
+require("gitsigns").setup({
+	signs = {
+		add = { text = "\u{2590}" }, -- ▏
+		change = { text = "\u{2590}" }, -- ▐
+		delete = { text = "\u{2590}" }, -- ◦
+		topdelete = { text = "\u{25e6}" }, -- ◦
+		changedelete = { text = "\u{25cf}" }, -- ●
+		untracked = { text = "\u{25cb}" }, -- ○
+	},
+	signcolumn = true,
+	current_line_blame = false,
 })
 
 -- GIT INTEGRATION WITH LAZYGIT
@@ -136,3 +150,33 @@ vim.keymap.set("n", "<leader>tt", "<cmd>ToggleTerm direction=float<CR>", { silen
 vim.keymap.set("t", "<Esc>", [[<C-\><C-n>]])
 
 vim.keymap.set("n", "<leader>gg", _lazygit_toggle, { noremap = true, silent = true })
+
+-- AUTOCMDS
+-- highlight yanked text
+vim.api.nvim_create_autocmd("TextYankPost", {
+	group = augroup,
+	callback = function()
+		vim.hl.on_yank()
+	end,
+})
+
+-- return to last cursor position
+vim.api.nvim_create_autocmd("BufReadPost", {
+	group = augroup,
+	desc = "Restore last cursor position",
+	callback = function()
+		if vim.o.diff then -- except in diff mode
+			return
+		end
+
+		local last_pos = vim.api.nvim_buf_get_mark(0, '"') -- {line, col}
+		local last_line = vim.api.nvim_buf_line_count(0)
+
+		local row = last_pos[1]
+		if row < 1 or row > last_line then
+			return
+		end
+
+		pcall(vim.api.nvim_win_set_cursor, 0, last_pos)
+	end,
+})
