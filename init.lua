@@ -154,6 +154,11 @@ require("nvim-tree").setup({
 	renderer = {
 		group_empty = true,
 	},
+    actions = {  
+    change_dir = {  
+      restrict_above_cwd = true,  
+    },  
+  },
 })
 vim.keymap.set("n", "<leader>e", function()
 	require("nvim-tree.api").tree.toggle()
@@ -212,7 +217,40 @@ require("mini.comment").setup({})
 require("mini.pairs").setup({})
 require("mini.basics").setup({})
 require("mini.icons").setup({})
-require("mini.statusline").setup({})
+require('mini.statusline').setup({  
+  content = {  
+    active = function()  
+      -- Add offset for nvimtree  
+      if vim.bo.filetype == 'NvimTree' then  
+        return '   ' .. MiniStatusline.combine_groups({  
+          { hl = 'MiniStatuslineFilename', strings = { 'NvimTree' } },  
+          '%='  
+        })  
+      end  
+        
+      -- Default content for other buffers  
+      local mode, mode_hl = MiniStatusline.section_mode({ trunc_width = 120 })  
+      local git           = MiniStatusline.section_git({ trunc_width = 40 })  
+      local diff          = MiniStatusline.section_diff({ trunc_width = 75 })  
+      local diagnostics   = MiniStatusline.section_diagnostics({ trunc_width = 75 })  
+      local lsp           = MiniStatusline.section_lsp({ trunc_width = 75 })  
+      local filename      = MiniStatusline.section_filename({ trunc_width = 140 })  
+      local fileinfo      = MiniStatusline.section_fileinfo({ trunc_width = 120 })  
+      local location      = MiniStatusline.section_location({ trunc_width = 75 })  
+      local search        = MiniStatusline.section_searchcount({ trunc_width = 75 })  
+  
+      return MiniStatusline.combine_groups({  
+        { hl = mode_hl,                  strings = { mode } },  
+        { hl = 'MiniStatuslineDevinfo',  strings = { git, diff, diagnostics, lsp } },  
+        '%<',  
+        { hl = 'MiniStatuslineFilename', strings = { filename } },  
+        '%=',  
+        { hl = 'MiniStatuslineFileinfo', strings = { fileinfo } },  
+        { hl = mode_hl,                  strings = { search, location } },  
+      })  
+    end  
+  }  
+})
 
 require("bufferline").setup({
   options = {
@@ -220,12 +258,12 @@ require("bufferline").setup({
       {
         filetype = "NvimTree",
         text = "File Explorer",
-        text_align = "center",
-        separator = true
+        text_align = "left",
       }
     }
   }
 })
+vim.keymap.set("n", "<leader>bb", "<cmd>BufferLinePick<CR>", { noremap = true, silent = true })
 
 -- AUTOCMDS
 -- highlight yanked text
