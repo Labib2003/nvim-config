@@ -8,6 +8,10 @@
       "rev": "78336bc89ee5365633bcf754d93df01678b5c08f",
       "src": "https://github.com/saghen/blink.cmp"
     },
+    "bufferline.nvim": {
+      "rev": "655133c3b4c3e5e05ec549b9f8cc2894ac6f51b3",
+      "src": "https://github.com/akinsho/bufferline.nvim"
+    },
     "efmls-configs-nvim": {
       "rev": "0b0ca5462a0a9c1233cc8359e64741d7d49fbbe4",
       "src": "https://github.com/creativenull/efmls-configs-nvim"

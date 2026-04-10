@@ -95,6 +95,8 @@ vim.pack.add({
     "https://github.com/nvim-tree/nvim-web-devicons",
     "https://github.com/nvim-tree/nvim-tree.lua",
 	"https://www.github.com/ibhagwan/fzf-lua",
+	"https://www.github.com/echasnovski/mini.nvim",
+    "https://github.com/akinsho/bufferline.nvim"
 })
 
 local function packadd(name)
@@ -105,6 +107,8 @@ packadd("gitsigns.nvim")
 packadd("nvim-web-devicons")
 packadd("nvim-tree.lua")
 packadd("fzf-lua")
+packadd("mini.nvim")
+packadd("bufferline.nvim")
 
 -- PLUGIN CONFIG
 require("toggleterm").setup({
@@ -115,7 +119,7 @@ require("toggleterm").setup({
     vim.schedule(function()
       vim.cmd("startinsert!")
     end)
-  end, -- 🔑 this was missing
+  end, 
 
   size = function(term)
     if term.direction == "horizontal" then
@@ -125,7 +129,7 @@ require("toggleterm").setup({
     end
   end,
 })
-vim.keymap.set("n", "<leader>tt", "<cmd>ToggleTerm direction=vertical<CR>", { silent = true })
+vim.keymap.set("n", "<leader>t", "<cmd>ToggleTerm direction=vertical<CR>", { silent = true })
 
 require("gitsigns").setup({
 	signs = {
@@ -201,6 +205,27 @@ function _lazygit_toggle()
   lazygit:toggle()
 end
 vim.keymap.set("n", "<leader>gg", _lazygit_toggle, { noremap = true, silent = true })
+
+require("mini.ai").setup({})
+require("mini.align").setup({})
+require("mini.comment").setup({})
+require("mini.pairs").setup({})
+require("mini.basics").setup({})
+require("mini.icons").setup({})
+require("mini.statusline").setup({})
+
+require("bufferline").setup({
+  options = {
+    offsets = {
+      {
+        filetype = "NvimTree",
+        text = "File Explorer",
+        text_align = "center",
+        separator = true
+      }
+    }
+  }
+})
 
 -- AUTOCMDS
 -- highlight yanked text
